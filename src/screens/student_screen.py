@@ -1,14 +1,16 @@
 import streamlit as st
 
 from src.ui.base_layout import style_background_dashboard, style_base_layout
+
 from src.components.header import header_dashboard
 from src.components.footer import footer_dashboard
 from PIL import Image
 import numpy as np
-from src.pipelines.face_pipeline import predict_attendance,get_face_embeddings,train_classifier
+from src.pipelines.face_pipeline import predict_attendance, get_face_embeddings, train_classifier
 from src.pipelines.voice_pipeline import get_voice_embedding
 from src.database.db import get_all_students, create_student, get_student_subjects, get_student_attendance, unenroll_student_to_subject
 import time
+
 from src.components.dialog_enroll import enroll_dialog
 from src.components.subject_card import subject_card
 
@@ -87,12 +89,15 @@ def student_dashboard():
 
 def student_screen():
 
+
     style_background_dashboard()
     style_base_layout()
 
-    if 'student_data' in st.session_state:
-        student_dashboard()
 
+    if "student_data" in st.session_state:
+        student_dashboard()
+        return
+    
     c1, c2 = st.columns(2, vertical_alignment='center', gap='xxlarge')
     with c1:
         header_dashboard()
@@ -104,15 +109,15 @@ def student_screen():
     st.header('Login using FaceID', text_alignment='center')
     st.space()
     st.space()
-
+    
     show_registration = False
-    photo_source=st.camera_input('Position your face in the center')
+    photo_source = st.camera_input("Position your face in the center")
 
     if photo_source:
         img = np.array(Image.open(photo_source))
 
-        with st.spinner("AI is scanning.."):
-            detected,all_ids,num_faces = predict_attendance(img)
+        with st.spinner('AI is scanning..'):
+            detected, all_ids, num_faces = predict_attendance(img)
 
             if num_faces == 0:
                 st.warning('Face not found!')
@@ -179,4 +184,5 @@ def student_screen():
                     st.warning('Please enter your name!')
 
 
+        
     footer_dashboard()
